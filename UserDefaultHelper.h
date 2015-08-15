@@ -1,7 +1,3 @@
-The MIT License (MIT)
-
-Copyright (c) 2015 S74nk0 - Stanko Krstić
-
 #pragma once
 
 #include "cocos2d.h"
@@ -68,27 +64,39 @@ inline void set##FUN_NAME##ForKey(const std::string &pKey, const T &value) {   \
 
 namespace UserDefaultHelper {
 
+
+template <typename T>
+constexpr inline bool __isTypeSupported__(const T &value) {
+	return
+		std::is_same<T, bool>::value ||
+		std::is_same<T, int>::value ||
+		std::is_same<T, float>::value ||
+		std::is_same<T, double>::value ||
+		std::is_same<T, std::string>::value ||
+		std::is_same<T, cocos2d::Data>::value;
+}
+
 // write changes to file
 inline void flush() { cocos2d::UserDefault::getInstance()->flush(); }
 // both functions must be specialized (we use the SPECIALIZE), otherwise we get
 // an error
 template <typename T>
 inline T getValueForKey(const char *pKey, const T &value) {
-  static_assert(false, "TYPE NOT SUPPORTED");
+  static_assert(__isTypeSupported__(value), "TYPE NOT SUPPORTED");
   return value;
 }
 template <typename T>
 inline void setValueForKey(const char *pKey, const T &value) {
-  static_assert(false, "TYPE NOT SUPPORTED");
+  static_assert(__isTypeSupported__(value), "TYPE NOT SUPPORTED");
 }
 template <typename T>
 inline T getValueForKey(const std::string &pKey, const T &value) {
-  static_assert(false, "TYPE NOT SUPPORTED");
+  static_assert(__isTypeSupported__(value), "TYPE NOT SUPPORTED");
   return value;
 }
 template <typename T>
 inline void setValueForKey(const std::string &pKey, const T &value) {
-  static_assert(false, "TYPE NOT SUPPORTED");
+  static_assert(__isTypeSupported__(value), "TYPE NOT SUPPORTED");
 }
 
 /// Supported types
